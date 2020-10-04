@@ -2,10 +2,9 @@ package springboot.nodebird.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -17,4 +16,7 @@ public class Hashtags {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "hashtags")
+    private List<PostsHashtags> postsHashtagsList = new ArrayList<>();
 }

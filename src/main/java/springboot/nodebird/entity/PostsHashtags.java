@@ -6,20 +6,17 @@ import javax.persistence.*;
 
 @Entity
 @Data
-public class Comments {
+public class PostsHashtags {
 
     @Id @GeneratedValue
-    @Column(name = "comment_id")
+    @Column(name = "posthashtag_id")
     private Long id;
-
-    @Column(nullable = false)
-    private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users users;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Posts posts;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hashtag_id")
+    private Hashtags hashtags;
 }

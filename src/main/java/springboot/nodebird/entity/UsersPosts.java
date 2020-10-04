@@ -5,15 +5,13 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "LIKED")
 @Data
-public class Comments {
+public class UsersPosts {
 
     @Id @GeneratedValue
-    @Column(name = "comment_id")
+    @Column(name = "like_id")
     private Long id;
-
-    @Column(nullable = false)
-    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -22,4 +20,5 @@ public class Comments {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Posts posts;
+
 }
