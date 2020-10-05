@@ -34,9 +34,9 @@ public class Posts {
     private List<UsersPosts> usersPostsList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Posts parent;
+    @JoinColumn(name = "retweet_id")
+    private Posts retweet;
 
-    @OneToMany(mappedBy = "parent")
-    private List<Posts> childList = new ArrayList<>();
+    @OneToMany(mappedBy = "retweet")
+    private List<Posts> retweetList = new ArrayList<>();
 }
