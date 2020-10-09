@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import springboot.nodebird.entity.Users;
 import springboot.nodebird.repository.UserRepository;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Optional;
@@ -62,6 +64,13 @@ public class UserController {
         findUsers.getFollowers();
         findUsers.getPostsList();
         return findUsers;
+    }
+
+    @PostMapping("/logout")
+    public Object logIn(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        request.logout();
+        response.setStatus(HttpServletResponse.SC_OK);
+        return "ok";
     }
 
     @Data
