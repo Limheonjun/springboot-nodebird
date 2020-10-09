@@ -1,5 +1,6 @@
 package springboot.nodebird.controller;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String logIn(@RequestBody Map<String, String> m, HttpServletResponse response) {
+    public Object logIn(@RequestBody Map<String, String> m, HttpServletResponse response) {
         Users findUsers = userRepository.findByEmail(m.get("email"));
         if(findUsers == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -56,6 +57,21 @@ public class UserController {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        return "ok";
+        //Users user = userRepository.findFetchJoinByEmail(m.get("email"));
+        findUsers.getFollowers();
+        findUsers.getFollowers();
+        findUsers.getPostsList();
+        return findUsers;
+    }
+
+    @Data
+    static class Result<T> {
+        T data;
+
+        Result (T t) {
+            this.data = t;
+        }
     }
 }
+
+
