@@ -1,12 +1,14 @@
 package springboot.nodebird.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "LIKED")
-@Data
+@Getter
+@Setter
 public class UsersPosts {
 
     @Id @GeneratedValue
