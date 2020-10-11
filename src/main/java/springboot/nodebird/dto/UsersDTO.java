@@ -18,8 +18,8 @@ public class UsersDTO {
     private List<Long> postsList = new ArrayList<>();
     private List<Comments> commentsList = new ArrayList<>();
     private List<UsersPosts> usersPostsList = new ArrayList<>();
-    private List<UsersUsers> followings = new ArrayList<>();
-    private List<UsersUsers> followers = new ArrayList<>();
+    private List<Long> followings = new ArrayList<>();
+    private List<Long> followers = new ArrayList<>();
 
     public UsersDTO (Users users) {
         this.id = users.getId();
@@ -29,8 +29,13 @@ public class UsersDTO {
         for(Posts posts : users.getPostsList()) {
             postsList.add(posts.getId());
         }
+        for(UsersUsers following : users.getFollowings()) {
+            this.followings.add(following.getId());
+        }
+        for(UsersUsers followers : users.getFollowers()) {
+            this.followers.add(followers.getId());
+        }
         this.usersPostsList = users.getUsersPostsList();
-        this.followings = users.getFollowings();
-        this.followers = users.getFollowers();
+
     }
 }
