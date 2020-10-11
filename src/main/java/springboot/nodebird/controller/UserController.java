@@ -2,17 +2,14 @@ package springboot.nodebird.controller;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import springboot.nodebird.dto.UsersDTO;
 import springboot.nodebird.entity.Users;
 import springboot.nodebird.repository.UserRepository;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +22,18 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
+    @GetMapping("/")
+    public Object keepLogIn(HttpSession session, HttpServletResponse response) {
+        Users users = (Users) session.getAttribute("userId");
+        if(users == null) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return null;
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        return new UsersDTO(users);
+    }
+
     @PostMapping("/")
     public String createUser(@RequestBody Map<String, String> m, HttpServletResponse response) {
         Users findUsers = userRepository.findByEmail(m.get("email"));
@@ -33,19 +42,17 @@ public class UserController {
             return "이미 사용중인 아이디 입니다";
         }
 
-        String passwordHashed = hashpw(m.get("password"), gensalt());
         Users users = Users.builder()
                 .email(m.get("email"))
                 .nickname(m.get("nickname"))
-                .password(passwordHashed)
+                .password(hashpw(m.get("password"), gensalt()))
                 .build();
-        System.out.println("passwordHashed : " + passwordHashed);
         userRepository.save(users);
         return "ok";
     }
 
     @PostMapping("/login")
-    public Object logIn(@RequestBody Map<String, String> m, HttpServletResponse response) {
+    public Object logIn(@RequestBody Map<String, String> m, HttpSession session, HttpServletResponse response) {
         Users findUsers = userRepository.findByEmail(m.get("email"));
         if(findUsers == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -58,17 +65,15 @@ public class UserController {
             return "비밀번호가 일치하지 않습니다";
         }
 
+        session.setAttribute("userId", findUsers);
+        UsersDTO usersDTO = new UsersDTO(findUsers);
         response.setStatus(HttpServletResponse.SC_OK);
-        //Users user = userRepository.findFetchJoinByEmail(m.get("email"));
-        findUsers.getFollowers();
-        findUsers.getFollowers();
-        findUsers.getPostsList();
-        return findUsers;
+        return usersDTO;
     }
 
     @PostMapping("/logout")
-    public Object logIn(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        request.logout();
+    public Object logIn(HttpSession session, HttpServletResponse response) throws ServletException {
+        session.invalidate();
         response.setStatus(HttpServletResponse.SC_OK);
         return "ok";
     }
