@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UsersDTO {
+public class UserDTO {
 
     private Long id;
     private String email;
@@ -21,7 +21,7 @@ public class UsersDTO {
     private List<Long> followings = new ArrayList<>();
     private List<Long> followers = new ArrayList<>();
 
-    public UsersDTO (Users users) {
+    public UserDTO(Users users) {
         this.id = users.getId();
         this.email = users.getEmail();
         this.nickname = users.getNickname();
