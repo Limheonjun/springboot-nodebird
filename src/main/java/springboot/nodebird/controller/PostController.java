@@ -102,4 +102,12 @@ public class PostController {
         usersPostsRepository.deleteByPostsIdAndUsersId(findPosts.get().getId(), ((Users) session.getAttribute("userId")).getId());
         return new LikedDTO(usersPosts);
     }
+
+    @DeleteMapping("/{postId}")
+    @Transactional
+    public Long deletePost(@PathVariable Long postId) {
+        Posts findPosts = postRepository.findById(postId).get();
+        postRepository.delete(findPosts);
+        return postId;
+    }
 }

@@ -26,22 +26,22 @@ public class Posts extends BaseTimeEntity{
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<Comments> commentsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<Images> imagesList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<PostsHashtags> postsHashtagsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<UsersPosts> usersPostsList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "retweet_id")
     private Posts retweet;
 
-    @OneToMany(mappedBy = "retweet")
+    @OneToMany(mappedBy = "retweet", cascade = CascadeType.ALL)
     private List<Posts> retweetList = new ArrayList<>();
 }

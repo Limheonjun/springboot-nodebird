@@ -77,13 +77,14 @@ public class UserController {
         return "ok";
     }
 
-    @Data
-    static class Result<T> {
-        T data;
-
-        Result (T t) {
-            this.data = t;
-        }
+    @PatchMapping("/nickname")
+    public String changeNickname(@RequestBody Map<String, String> m, HttpSession session, HttpServletResponse response){
+        Long userId = ((Users) session.getAttribute("userId")).getId();
+        Users findUsers = userRepository.findById(userId).get();
+        findUsers.setNickname(m.get("nickname"));
+        userRepository.save(findUsers);
+        response.setStatus(HttpServletResponse.SC_OK);
+        return m.get("nickname");
     }
 }
 
