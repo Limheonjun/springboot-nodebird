@@ -17,7 +17,7 @@ public class UserDTO {
     private String password;
     private List<Long> postsList = new ArrayList<>();
     private List<Comments> commentsList = new ArrayList<>();
-    private List<UsersPosts> usersPostsList = new ArrayList<>();
+    private List<Long> usersPostsList = new ArrayList<>();
     private List<Long> followings = new ArrayList<>();
     private List<Long> followers = new ArrayList<>();
 
@@ -35,7 +35,10 @@ public class UserDTO {
         for(UsersUsers followers : users.getFollowers()) {
             this.followers.add(followers.getId());
         }
-        this.usersPostsList = users.getUsersPostsList();
+
+        for(UsersPosts usersPosts : users.getUsersPostsList()) {
+            this.usersPostsList.add(usersPosts.getId());
+        }
 
     }
 }

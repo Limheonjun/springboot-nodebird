@@ -3,17 +3,22 @@ package springboot.nodebird.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springboot.nodebird.dto.CommentDTO;
+import springboot.nodebird.dto.LikedDTO;
 import springboot.nodebird.dto.PostDTO;
 import springboot.nodebird.entity.Comments;
 import springboot.nodebird.entity.Posts;
 import springboot.nodebird.entity.Users;
+import springboot.nodebird.entity.UsersPosts;
 import springboot.nodebird.repository.CommentRepository;
 import springboot.nodebird.repository.PostRepository;
 import springboot.nodebird.repository.UserRepository;
+import springboot.nodebird.repository.UsersPostsRepository;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
@@ -27,6 +32,9 @@ public class PostController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UsersPostsRepository usersPostsRepository;
 
     @PostMapping("/")
     public Object createPost(@RequestBody Map<String, Object> m, HttpSession session, HttpServletResponse response) {
@@ -63,20 +71,35 @@ public class PostController {
         return new CommentDTO(comments);
     }
 
-    /*
-    @PostMapping("/post")
-    public Map<String, Object> postPost() {
-        Map<String, Object> m = new HashMap<>();
-        m.put("id", 1);
-        m.put("content", "hello");
-        return m;
+    @PatchMapping("/{postId}/like")
+    public Object likePost(@PathVariable Long postId, HttpServletResponse response, HttpSession session) {
+        Optional<Posts> findPosts = postRepository.findById(postId);
+        if(findPosts.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "게시글이 존재하지 않습니다";
+        }
+
+        UsersPosts usersPosts = new UsersPosts();
+        usersPosts.setUsers((Users) session.getAttribute("userId"));
+        usersPosts.setPosts(findPosts.get());
+        usersPostsRepository.save(usersPosts);
+        return new LikedDTO(usersPosts);
+
     }
 
-    @DeleteMapping("/post")
-    public Map<String, Object> deletePost() {
-        Map<String, Object> m = new HashMap<>();
-        m.put("id", 1);
-        return m;
+    @DeleteMapping("/{postId}/like")
+    @Transactional//delete를 하는 곳에는 무조건 필요
+    public Object unlikePost(@PathVariable Long postId, HttpServletResponse response, HttpSession session) {
+        Optional<Posts> findPosts = postRepository.findById(postId);
+        if(findPosts.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "게시글이 존재하지 않습니다";
+        }
+
+        UsersPosts usersPosts = new UsersPosts();
+        usersPosts.setUsers((Users) session.getAttribute("userId"));
+        usersPosts.setPosts(findPosts.get());
+        usersPostsRepository.deleteByPostsIdAndUsersId(findPosts.get().getId(), ((Users) session.getAttribute("userId")).getId());
+        return new LikedDTO(usersPosts);
     }
-     */
 }

@@ -1,12 +1,10 @@
 package springboot.nodebird.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import springboot.nodebird.entity.*;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class PostDTO {
     private List<CommentDTO> commentsList = new ArrayList<>();
     private List<Long> imagesList = new ArrayList<>();
     private List<Long> postsHashtagsList = new ArrayList<>();
-    private List<Long> usersPostsList = new ArrayList<>();
+    private List<LikedDTO> likers = new ArrayList<>();
     //private Long retweet;
     private List<Long> retweetList = new ArrayList<>();
 
@@ -38,7 +36,7 @@ public class PostDTO {
             this.postsHashtagsList.add(postsHashtagsList.getId());
         }
         for(UsersPosts usersPosts : posts.getUsersPostsList()) {
-            this.usersPostsList.add(usersPosts.getId());
+            this.likers.add(new LikedDTO(usersPosts));
         }
         //this.retweet = posts.getRetweet().getId();
         for(Posts post : posts.getRetweetList()) {

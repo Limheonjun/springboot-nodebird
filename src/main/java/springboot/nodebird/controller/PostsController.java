@@ -23,6 +23,7 @@ public class PostsController {
         PageRequest pageRequest = PageRequest.of(0,  10);
         Page<Posts> page = postRepository.findAll(pageRequest);
         List<PostDTO> results = page.stream().map(PostDTO::new).collect(Collectors.toList());
+        System.out.println("results : " + results.toString());
         return results;
     }
 }
