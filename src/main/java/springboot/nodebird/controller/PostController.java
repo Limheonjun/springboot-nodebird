@@ -2,6 +2,7 @@ package springboot.nodebird.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springboot.nodebird.dto.CommentDTO;
 import springboot.nodebird.dto.PostDTO;
 import springboot.nodebird.entity.Comments;
 import springboot.nodebird.entity.Posts;
@@ -47,7 +48,7 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/comment")
-    public void createComment(@PathVariable Long postId, @RequestBody Map<String, Object> m, HttpSession session, HttpServletResponse response) {
+    public Object createComment(@PathVariable Long postId, @RequestBody Map<String, Object> m, HttpSession session, HttpServletResponse response) {
         System.out.println(">>>>>>>>>>>>>>>>>> id : " + postId);
         System.out.println(">>>>>>>>>>>>>>>>>> m : " + m.toString());
         Posts findPosts = postRepository.findById(postId).get();
@@ -59,6 +60,7 @@ public class PostController {
         comments.setPosts(findPosts);
         comments.setUsers((Users) session.getAttribute("userId"));
         commentRepository.save(comments);
+        return new CommentDTO(comments);
     }
 
     /*
