@@ -1,16 +1,19 @@
 package springboot.nodebird.controller;
 
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springboot.nodebird.dto.UserDTO;
 import springboot.nodebird.entity.Users;
+import springboot.nodebird.entity.UsersUsers;
 import springboot.nodebird.repository.UserRepository;
+import springboot.nodebird.repository.UsersUsersRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.security.crypto.bcrypt.BCrypt.*;
 
@@ -20,6 +23,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UsersUsersRepository usersUsersRepository;
 
     @GetMapping("/")
     public Object keepLogIn(HttpSession session, HttpServletResponse response) {
@@ -85,6 +91,35 @@ public class UserController {
         userRepository.save(findUsers);
         response.setStatus(HttpServletResponse.SC_OK);
         return m.get("nickname");
+    }
+
+    @PatchMapping("/{userId}/follow")
+    public Object follow(@PathVariable Long userId, HttpSession session, HttpServletResponse response){
+        Optional<Users> optinal = userRepository.findById(userId);
+        if(optinal.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "없는 사람을 팔로우 하려고 하시네요?";
+        }
+
+        Users findUsers = optinal.get(); //팔로우 하고자 하는 사람
+        usersUsersRepository.save(new UsersUsers(null, findUsers, (Users) session.getAttribute("userId")));
+        response.setStatus(HttpServletResponse.SC_OK);
+        return userId;
+    }
+
+    @DeleteMapping("/{userId}/follow")
+    @Transactional
+    public Object unfollow(@PathVariable Long userId, HttpSession session, HttpServletResponse response){
+        Optional<Users> optinal = userRepository.findById(userId);
+        if(optinal.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "없는 사람을 언팔로우 하려고 하시네요?";
+        }
+
+        Users findUsers = optinal.get(); //언팔로우 하고자 하는 사람
+        usersUsersRepository.deleteByFollowingsAndFollowers(findUsers, (Users) session.getAttribute("userId"));
+        response.setStatus(HttpServletResponse.SC_OK);
+        return userId;
     }
 }
 
