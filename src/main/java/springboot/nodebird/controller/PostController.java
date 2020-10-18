@@ -2,6 +2,7 @@ package springboot.nodebird.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springboot.nodebird.dto.CommentDTO;
 import springboot.nodebird.dto.LikedDTO;
 import springboot.nodebird.dto.PostDTO;
@@ -17,6 +18,10 @@ import springboot.nodebird.repository.UsersPostsRepository;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -109,5 +114,16 @@ public class PostController {
         Posts findPosts = postRepository.findById(postId).get();
         postRepository.delete(findPosts);
         return postId;
+    }
+
+    @PostMapping("/images")
+    public Object uploadImages(MultipartFile image) throws IOException {
+        System.out.println("files : " + image);
+        String baseDir = "C:\\Users\\MS\\Desktop\\nodebird\\src\\main\\resources\\static\\";
+        String filePath = baseDir + image.getOriginalFilename();
+        image.transferTo(new File(filePath));
+        List<String> imagePaths = new ArrayList<>();
+        imagePaths.add(image.getOriginalFilename());
+        return imagePaths;
     }
 }
