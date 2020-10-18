@@ -12,8 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.crypto.bcrypt.BCrypt.*;
 
@@ -112,14 +114,35 @@ public class UserController {
     public Object unfollow(@PathVariable Long userId, HttpSession session, HttpServletResponse response){
         Optional<Users> optinal = userRepository.findById(userId);
         if(optinal.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return "없는 사람을 언팔로우 하려고 하시네요?";
-        }
+            Optional<UsersUsers> optional2 = usersUsersRepository.findById(userId);
+            if(optional2.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return "없는 사람을 언팔로우 하려고 하시네요?";
+            }
+            usersUsersRepository.deleteById(userId);
+        } else {
+            Users findUsers = optinal.get(); //언팔로우 하고자 하는 사람
+            usersUsersRepository.deleteByFollowingsAndFollowers(findUsers, (Users) session.getAttribute("userId"));
+            response.setStatus(HttpServletResponse.SC_OK);
 
-        Users findUsers = optinal.get(); //언팔로우 하고자 하는 사람
-        usersUsersRepository.deleteByFollowingsAndFollowers(findUsers, (Users) session.getAttribute("userId"));
-        response.setStatus(HttpServletResponse.SC_OK);
+        }
         return userId;
+    }
+
+    @GetMapping("/followings") //내가 팔로우한 사람들
+    public List<Long> getfollowings(HttpSession session, HttpServletResponse response){
+        List<UsersUsers> followings = usersUsersRepository.findByFollowers((Users) session.getAttribute("userId"));
+        List<Long> result = followings.stream().map(UsersUsers::getId).collect(Collectors.toList());
+        response.setStatus(HttpServletResponse.SC_OK);
+        return result;
+    }
+
+    @GetMapping("/followers")
+    public List<Long> getfollowers(HttpSession session, HttpServletResponse response){
+        List<UsersUsers> followers = usersUsersRepository.findByFollowings((Users) session.getAttribute("userId"));
+        List<Long> result = followers.stream().map(UsersUsers::getId).collect(Collectors.toList());
+        response.setStatus(HttpServletResponse.SC_OK);
+        return result;
     }
 }
 
