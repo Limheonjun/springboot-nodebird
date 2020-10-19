@@ -3,7 +3,7 @@ package springboot.nodebird.controller;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import springboot.nodebird.dto.UsersDTO;
+import springboot.nodebird.dto.UserDTO;
 import springboot.nodebird.entity.Users;
 import springboot.nodebird.repository.UserRepository;
 
@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.springframework.security.crypto.bcrypt.BCrypt.*;
 
@@ -31,7 +30,7 @@ public class UserController {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        return new UsersDTO(users);
+        return new UserDTO(users);
     }
 
     @PostMapping("/")
@@ -66,7 +65,7 @@ public class UserController {
         }
 
         session.setAttribute("userId", findUsers);
-        UsersDTO usersDTO = new UsersDTO(findUsers);
+        UserDTO usersDTO = new UserDTO(findUsers);
         response.setStatus(HttpServletResponse.SC_OK);
         return usersDTO;
     }
