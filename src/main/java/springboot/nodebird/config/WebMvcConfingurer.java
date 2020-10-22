@@ -1,12 +1,14 @@
 package springboot.nodebird.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springboot.nodebird.interceptor.UrlPathInterceptor;
 
 @Configuration
+@EnableJpaAuditing
 public class WebMvcConfingurer implements WebMvcConfigurer {
 
     @Override

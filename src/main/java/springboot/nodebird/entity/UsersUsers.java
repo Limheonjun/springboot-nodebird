@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "FOLLOW")
 @Getter
 @Setter
-public class UsersUsers {
+public class UsersUsers extends BaseTimeEntity{
 
     @Id @GeneratedValue
     @Column(name = "follow_id")

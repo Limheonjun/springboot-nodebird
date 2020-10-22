@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Hashtags {
+public class Hashtags extends BaseTimeEntity{
 
     @Id @GeneratedValue
     @Column(name = "hashtag_id")

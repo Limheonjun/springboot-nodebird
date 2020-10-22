@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Images {
+public class Images extends BaseTimeEntity{
 
     @Id @GeneratedValue
     @Column(name = "image_id")

@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class PostsHashtags {
+public class PostsHashtags extends BaseTimeEntity{
 
     @Id @GeneratedValue
     @Column(name = "posthashtag_id")
